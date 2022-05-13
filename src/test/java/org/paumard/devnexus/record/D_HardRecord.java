@@ -84,7 +84,7 @@ public class D_HardRecord {
         assertThat(city.name()).isEqualTo("Atlanta");
         assertThat(city.state()).isEqualTo("Georgia");
         assertThat(city.population()).isEqualTo(506_811);
-        assertThat(city.landArea()).isCloseTo(3458, Offset.offset(0.001));
+        assertThat(city.landArea()).isCloseTo(345.8, Offset.offset(0.001));
     }
     // Hint:
     // <editor-fold defaultstate="collapsed">

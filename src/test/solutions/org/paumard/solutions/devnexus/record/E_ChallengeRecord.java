@@ -42,9 +42,11 @@ public class E_ChallengeRecord {
             var name = elements[1];
             var state = new State(elements[2]);
             var population =
-                    new Population(Integer.parseInt(elements[3].replaceAll(" ", "")));
+                  new Population(Integer.parseInt(elements[3].replaceAll(" ", "")));
             var surface =
-                    new LandArea(Double.parseDouble(elements[4].replaceAll("[ ,]", "")));
+                  new LandArea(
+                        Double.parseDouble(
+                              elements[4].replaceAll("[ ]", "").replaceAll("[,]", ".")));
             return new City(id, name, state, population, surface);
         }
 
@@ -54,12 +56,12 @@ public class E_ChallengeRecord {
 
         public static Collector<City, ?, Population> summingPopulation() {
             return Collectors.mapping(City::population,
-                    Collectors.reducing(new Population(0), Population.add()));
+                  Collectors.reducing(new Population(0), Population.add()));
         }
 
         public static Collector<City, ?, LandArea> summingLandArea() {
             return Collectors.mapping(City::landArea,
-                    Collectors.reducing(new LandArea(0d), LandArea.add()));
+                  Collectors.reducing(new LandArea(0d), LandArea.add()));
         }
     }
 
@@ -74,7 +76,7 @@ public class E_ChallengeRecord {
 
         public static BinaryOperator<Population> add() {
             return (population1, population2) ->
-                    new Population(population1.amount() + population2.amount());
+                  new Population(population1.amount() + population2.amount());
         }
 
         public double density(LandArea landArea) {
@@ -86,7 +88,7 @@ public class E_ChallengeRecord {
 
         public static BinaryOperator<LandArea> add() {
             return (landArea1, landArea2) ->
-                    new LandArea(landArea1.amount() + landArea2.amount());
+                  new LandArea(landArea1.amount() + landArea2.amount());
         }
     }
 
@@ -97,7 +99,7 @@ public class E_ChallengeRecord {
 
         public static PopulatedState of(Map.Entry<State, List<City>> entry) {
             return new PopulatedState(entry.getKey(),
-                    entry.getValue().stream().map(City::population).reduce(new Population(0), Population.add()));
+                  entry.getValue().stream().map(City::population).reduce(new Population(0), Population.add()));
         }
 
         public static Comparator<? super PopulatedState> comparingByPopulation() {
@@ -120,7 +122,7 @@ public class E_ChallengeRecord {
 
         public CityByState groupedByState() {
             return new CityByState(
-                    cities.stream().collect(Collectors.groupingBy(City::state))
+                  cities.stream().collect(Collectors.groupingBy(City::state))
             );
         }
     }
@@ -136,16 +138,16 @@ public class E_ChallengeRecord {
 
         public PopulatedState getMostPopulatedCity() {
             return cityByState.entrySet().stream()
-                    .map(PopulatedState::of)
-                    .max(PopulatedState.comparingByPopulation())
-                    .orElseThrow();
+                  .map(PopulatedState::of)
+                  .max(PopulatedState.comparingByPopulation())
+                  .orElseThrow();
         }
 
         public PopulatedState getLeastPopulatedCity() {
             return cityByState.entrySet().stream()
-                    .map(PopulatedState::of)
-                    .min(PopulatedState.comparingByPopulation())
-                    .orElseThrow();
+                  .map(PopulatedState::of)
+                  .min(PopulatedState.comparingByPopulation())
+                  .orElseThrow();
         }
     }
 
@@ -162,7 +164,7 @@ public class E_ChallengeRecord {
         assertThat(city.name()).isEqualTo("Atlanta");
         assertThat(city.state().name()).isEqualTo("Georgia");
         assertThat(city.population().amount()).isEqualTo(506_811);
-        assertThat(city.landArea().amount()).isCloseTo(3458d, Offset.offset(0.001));
+        assertThat(city.landArea().amount()).isCloseTo(345.8d, Offset.offset(0.001));
     }
     // Hint:
     // <editor-fold defaultstate="collapsed">
@@ -208,8 +210,8 @@ public class E_ChallengeRecord {
     public void e_record03() {
 
         states = cities.stream()
-                .map(City::state)
-                .distinct().toList();
+              .map(City::state)
+              .distinct().toList();
 
         assertThat(cities).hasSize(317);
         assertThat(states).hasSize(46);
@@ -227,9 +229,9 @@ public class E_ChallengeRecord {
     public void e_record05() {
 
         Population totalPopulation = cities.stream()
-                .map(City::population)
-                .reduce(new Population(0),
-                        Population.add());
+              .map(City::population)
+              .reduce(new Population(0),
+                    Population.add());
 
         assertThat(totalPopulation.amount()).isEqualTo(88_231_877);
     }
@@ -251,11 +253,11 @@ public class E_ChallengeRecord {
     public void e_record06() {
 
         populationByState =
-                cities.stream()
-                        .collect(Collectors.groupingBy(
-                                City::state,
-                                City.summingPopulation()
-                        ));
+              cities.stream()
+                    .collect(Collectors.groupingBy(
+                          City::state,
+                          City.summingPopulation()
+                    ));
 
         assertThat(populationByState.size()).isEqualTo(46);
         assertThat(populationByState.get(new State("Georgia")).amount()).isEqualTo(1_434_456);
@@ -281,10 +283,10 @@ public class E_ChallengeRecord {
     public void e_record07() {
 
         PopulatedState mostPopulatedState =
-                populationByState.entrySet().stream()
-                        .map(PopulatedState::new)
-                        .max(PopulatedState.comparingByPopulation())
-                        .orElseThrow();
+              populationByState.entrySet().stream()
+                    .map(PopulatedState::new)
+                    .max(PopulatedState.comparingByPopulation())
+                    .orElseThrow();
 
         assertThat(mostPopulatedState.state()).isEqualTo(new State("California"));
         assertThat(mostPopulatedState.population()).isEqualTo(new Population(18_976_671));
@@ -307,13 +309,13 @@ public class E_ChallengeRecord {
     public void e_record08() {
 
         PopulatedState mostPopulatedState =
-                Cities.from(cities)
-                        .groupedByState()
-                        .getMostPopulatedCity();
+              Cities.from(cities)
+                    .groupedByState()
+                    .getMostPopulatedCity();
         PopulatedState leastPopulatedState =
-                Cities.from(cities)
-                        .groupedByState()
-                        .getLeastPopulatedCity();
+              Cities.from(cities)
+                    .groupedByState()
+                    .getLeastPopulatedCity();
 
         assertThat(mostPopulatedState.state()).isEqualTo(new State("California"));
         assertThat(mostPopulatedState.population()).isEqualTo(new Population(18_976_671));
@@ -334,18 +336,18 @@ public class E_ChallengeRecord {
     public void e_record09() {
 
         City mostDenseCity =
-                cities.stream()
-                        .max(Comparator.comparing(City::density))
-                        .orElseThrow();
+              cities.stream()
+                    .max(Comparator.comparing(City::density))
+                    .orElseThrow();
         City leastDenseCity =
-                cities.stream()
-                        .min(Comparator.comparing(City::density))
-                        .orElseThrow();
+              cities.stream()
+                    .min(Comparator.comparing(City::density))
+                    .orElseThrow();
 
-        assertThat(mostDenseCity.name()).isEqualTo("Seattle");
-        assertThat(mostDenseCity.density()).isCloseTo(3473d, Offset.offset(0.5d));
+        assertThat(mostDenseCity.name()).isEqualTo("New York");
+        assertThat(mostDenseCity.density()).isCloseTo(10675.9d, Offset.offset(0.5d));
         assertThat(leastDenseCity.name()).isEqualTo("Anchorage");
-        assertThat(leastDenseCity.density()).isCloseTo(0.000651d, Offset.offset(0.000005d));
+        assertThat(leastDenseCity.density()).isCloseTo(0.065d, Offset.offset(0.0005d));
     }
     // Hint:
     // <editor-fold defaultstate="collapsed">
@@ -362,20 +364,20 @@ public class E_ChallengeRecord {
     public void e_record10() {
 
         Map<State, Double> densityByState =
-                cities.stream()
-                        .collect(Collectors.groupingBy(
-                                City::state,
-                                Collectors.teeing(
-                                        City.summingPopulation(),
-                                        City.summingLandArea(),
-                                        Population::density
-                                )
-                        ));
+              cities.stream()
+                    .collect(Collectors.groupingBy(
+                          City::state,
+                          Collectors.teeing(
+                                City.summingPopulation(),
+                                City.summingLandArea(),
+                                Population::density
+                          )
+                    ));
 
         assertThat(densityByState).hasSize(46);
-        assertThat(densityByState.get(new State("Georgia"))).isCloseTo(47.8d, Offset.offset(0.05));
-        assertThat(densityByState.get(new State("New York"))).isCloseTo(822d, Offset.offset(0.5));
-        assertThat(densityByState.get(new State("Alabama"))).isCloseTo(46.5d, Offset.offset(0.05));
+        assertThat(densityByState.get(new State("Georgia"))).isCloseTo(477.7d, Offset.offset(0.05));
+        assertThat(densityByState.get(new State("New York"))).isCloseTo(8224.1d, Offset.offset(0.5));
+        assertThat(densityByState.get(new State("Alabama"))).isCloseTo(385.1d, Offset.offset(0.05));
     }
     // Hint:
     // <editor-fold defaultstate="collapsed">
