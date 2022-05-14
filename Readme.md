@@ -1,6 +1,10 @@
 Notes
 =====
 
+This lab has been used in several conferences including [DevNexus](https://devnexus.com/), [Devoxx France](https://www.devoxx.fr/) and [Devoxx UK](https://www.devoxx.co.uk/).
+
+The slides are available here: https://speakerdeck.com/josepaumard/explore-java-17-and-beyond
+
 ## Records
 
 ### Simple Records
